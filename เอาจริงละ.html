@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ประกอบรูปทรงคณิตศาสตร์</title>
+  <style>
+    /* รีเซ็ต */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #eef2f3, #dfe9f3);
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+      color: #2c3e50;
+    }
+
+    p.subtitle {
+      margin-bottom: 20px;
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+
+    .controls {
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0;
+      font-weight: bold;
+    }
+
+    select, input[type="number"] {
+      margin-left: 8px;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+
+    #canvas {
+      margin: 20px auto;
+      display: block;
+      border-radius: 12px;
+      border: 2px solid #444;
+      background: #f9fafc;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    footer {
+      margin-top: 25px;
+      font-size: 0.9rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>เว็บประกอบรูปร่าง</h1>
+  <p class="subtitle">เว็บที่เป็นงานเอาไว้ส่งวิชาคอมพิวเตอร์</p>
+
+  <div class="card">
+    <div class="controls">
+      <!-- ส่วนบน -->
+      <label>ส่วนบน (10%):
+        <select id="topShape">
+          <option value="none">-- ไม่เลือก --</option>
+          <option value="triangle">สามเหลี่ยม</option>
+          <option value="square">สี่เหลี่ยม</option>
+          <option value="circle">วงกลม</option>
+        </select>
+        จำนวน:
+        <input type="number" id="topCount" value="1" min="1" max="5">
+        หมุน:
+        <select id="topRotate">
+          <option value="0">0°</option>
+          <option value="45">45°</option>
+          <option value="-45">-45°</option>
+          <option value="90">90°</option>
+          <option value="180">180°</option>
+        </select>
+      </label>
+
+      <!-- ส่วนกลาง -->
+      <label>ส่วนกลาง:
+        <select id="middleShape">
+          <option value="none">-- ไม่เลือก --</option>
+          <option value="triangle">สามเหลี่ยม</option>
+          <option value="square">สี่เหลี่ยม</option>
+          <option value="circle">วงกลม</option>
+        </select>
+        จำนวน:
+        <input type="number" id="middleCount" value="1" min="1" max="6">
+        หมุน:
+        <select id="middleRotate">
+          <option value="0">0°</option>
+          <option value="45">45°</option>
+          <option value="-45">-45°</option>
+          <option value="90">90°</option>
+          <option value="180">180°</option>
+        </select>
+        ขนาด:
+        <select id="middleSize">
+          <option value="0.6">เล็กมาก</option>
+          <option value="0.8">เล็ก</option>
+          <option value="1" selected>ปกติ</option>
+          <option value="1.2">ใหญ่</option>
+          <option value="1.5">ใหญ่มาก</option>
+        </select>
+      </label>
+
+      <!-- ส่วนล่าง -->
+      <label>ส่วนล่าง:
+        <select id="bottomShape">
+          <option value="none">-- ไม่เลือก --</option>
+          <option value="triangle">สามเหลี่ยม</option>
+          <option value="square">สี่เหลี่ยม</option>
+          <option value="circle">วงกลม</option>
+        </select>
+        จำนวน:
+        <input type="number" id="bottomCount" value="1" min="1" max="5">
+        หมุน:
+        <select id="bottomRotate">
+          <option value="0">0°</option>
+          <option value="45">45°</option>
+          <option value="-45">-45°</option>
+          <option value="90">90°</option>
+          <option value="180">180°</option>
+        </select>
+      </label>
+    </div>
+
+    <!-- canvas จริง -->
+    <canvas id="canvas" width="250" height="400"></canvas>
+    <button id="downloadBtn">💾 ดาวน์โหลดภาพ</button>
+  </div>
+
+  <footer>
+    U I I I AA
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const topShape = document.getElementById("topShape");
+    const middleShape = document.getElementById("middleShape");
+    const bottomShape = document.getElementById("bottomShape");
+
+    const topCount = document.getElementById("topCount");
+    const middleCount = document.getElementById("middleCount");
+    const bottomCount = document.getElementById("bottomCount");
+
+    const topRotate = document.getElementById("topRotate");
+    const middleRotate = document.getElementById("middleRotate");
+    const bottomRotate = document.getElementById("bottomRotate");
+
+    const middleSize = document.getElementById("middleSize");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    // วาดรูปร่าง
+    function drawShape(shape, x, y, w, h, angleDeg) {
+      ctx.save();
+      ctx.translate(x + w/2, y + h/2);
+      ctx.rotate(angleDeg * Math.PI / 180);
+      ctx.beginPath();
+      if (shape === "square") {
+        ctx.rect(-w/2, -h/2, w, h);
+      } else if (shape === "circle") {
+        ctx.arc(0, 0, Math.min(w,h)/2, 0, Math.PI*2);
+      } else if (shape === "triangle") {
+        ctx.moveTo(0, -h/2);
+        ctx.lineTo(-w/2, h/2);
+        ctx.lineTo(w/2, h/2);
+        ctx.closePath();
+      }
+      ctx.fillStyle = "#555879";
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // ส่วนกลางแบบลูกเต๋า
+    function drawDicePattern(shape, count, x, y, w, h, angle, scale=1) {
+      if (shape === "none") return;
+      let size = Math.min(w, h) / 5 * scale;  
+      const cx = x + w / 2, cy = y + h / 2;
+      const offsetX = w / 4, offsetY = h / 4;
+
+      const positions = {
+        1: [[cx, cy]],
+        2: [[cx - offsetX, cy - offsetY], [cx + offsetX, cy + offsetY]],
+        3: [[cx - offsetX, cy - offsetY], [cx, cy], [cx + offsetX, cy + offsetY]],
+        4: [[cx - offsetX, cy - offsetY], [cx + offsetX, cy - offsetY],
+            [cx - offsetX, cy + offsetY], [cx + offsetX, cy + offsetY]],
+        5: [[cx - offsetX, cy - offsetY], [cx + offsetX, cy - offsetY],
+            [cx, cy],
+            [cx - offsetX, cy + offsetY], [cx + offsetX, cy + offsetY]],
+        6: [[cx - offsetX, cy - offsetY], [cx - offsetX, cy],
+            [cx - offsetX, cy + offsetY],
+            [cx + offsetX, cy - offsetY], [cx + offsetX, cy],
+            [cx + offsetX, cy + offsetY]]
+      };
+
+      if (positions[count]) {
+        positions[count].forEach(([px, py]) => {
+          drawShape(shape, px - size/2, py - size/2, size, size, angle);
+        });
+      }
+    }
+
+    // ส่วนบน/ล่าง
+    function drawMultiple(shape, count, x, y, w, h, angle) {
+      if (shape === "none") return;
+      if (shape === "square") {
+        const pieceW = w / count;
+        for (let i = 0; i < count; i++) {
+          drawShape(shape, x + i * pieceW, y, pieceW, h, angle);
+        }
+      } else {
+        const gap = w / count;
+        for (let i = 0; i < count; i++) {
+          drawShape(shape, x + i * gap, y, gap, h, angle);
+        }
+      }
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const hTop = Math.floor(canvas.height * 0.1);
+      const hMiddle = Math.floor(canvas.height * 0.8);
+      const hBottom = canvas.height - hTop - hMiddle;
+
+      drawMultiple(topShape.value, +topCount.value, 0, 0, canvas.width, hTop, +topRotate.value);
+      drawDicePattern(middleShape.value, +middleCount.value, 0, hTop, canvas.width, hMiddle, +middleRotate.value, +middleSize.value);
+      drawMultiple(bottomShape.value, +bottomCount.value, 0, hTop + hMiddle, canvas.width, hBottom, +bottomRotate.value);
+    }
+
+    [topShape, middleShape, bottomShape, 
+     topCount, middleCount, bottomCount,
+     topRotate, middleRotate, bottomRotate,
+     middleSize].forEach(el => el.addEventListener("change", render));
+
+    downloadBtn.addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.download = "output.png";
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+
+    render();
+  </script>
+</body>
+</html>
